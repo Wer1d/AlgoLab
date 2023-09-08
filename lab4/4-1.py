@@ -36,8 +36,7 @@ def coin_change_bottomUp(coins, target):
         for i in range(coin, target + 1):
             for prev_combination in table[i - coin]: # ของที่ exitst แล้วช่วยเติม
                 table[i].append(prev_combination + [coin])    
-            print("table")
-            print(table)
+            
     return table[target]
 
 def coin_change_topDown(coins, amount):
@@ -52,7 +51,7 @@ def coin_change_topDown(coins, amount):
         all_combinations = []
         for coin in coins:
             if coin <= target: # ถ้าเหรียญยังใส่ได้
-                
+
                 # Recursive remaining amount
                 remaining_combinations = find_combinations(target - coin)
                 
@@ -72,26 +71,33 @@ def coin_change_topDown(coins, amount):
     
     return combinations if combinations else [[]]
 
-coins = [1,3,4,5]
-target = 7
 
-print(f"Combinations recur of coins to make change for {target}:")
-time_start = time.perf_counter()
-combinations_recur = coin_change_recursive(coins, target)
-time_end = time.perf_counter()
-print(f"Time elapsed: {time_end - time_start} seconds")
-print("recur:",combinations_recur)
+with open("./input.txt", "r") as file:
+    # Read the first line as the target
+    target = int(file.readline().strip())
+    
+    # Read the rest of the lines and split them into a list
+    coins = list(map(int, file.readline().strip().split()))
 
-print(f"Combinations bot of coins to make change for {target}:")
-time_start = time.perf_counter()
-combinations_bot = coin_change_bottomUp(coins, target)
-time_end = time.perf_counter()
-print(f"Time elapsed: {time_end - time_start} seconds")
-print("bot:",combinations_bot)
+print(coins)
+print(target)
+# print(f"Combinations recur of coins to make change for {target}:")
+# time_start = time.perf_counter()
+# combinations_recur = coin_change_recursive(coins, target)
+# time_end = time.perf_counter()
+# print(f"Time elapsed: {time_end - time_start} seconds")
+# print("recur:",combinations_recur)
+
+# print(f"Combinations bot of coins to make change for {target}:")
+# time_start = time.perf_counter()
+# combinations_bot = coin_change_bottomUp(coins, target)
+# time_end = time.perf_counter()
+# print(f"Time elapsed: {time_end - time_start} seconds")
+# print("bot:",combinations_bot)
 
 print(f"Combinations top of coins to make change for {target}:")
 time_start = time.perf_counter()
-combinations_top = coin_change_topDown(coins, target)
+combinations_top = coin_change_bottomUp(coins, target)
 time_end = time.perf_counter()
 print(f"Time elapsed: {time_end - time_start} seconds")
 print("top:",combinations_top)

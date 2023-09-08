@@ -1,20 +1,24 @@
+import time
+
 def coin_change_bottomUp(coins, target):
-    dp = [[] for _ in range(target + 1)]
-    dp[0] = []  # Base case
+    
+    memo = [float('inf')] * (target + 1) # memo
+    memo[0] = 0  # Base case
 
-    for i in range(1, target + 1): # travel on dp table
-        for coin in coins: 
-            if i - coin >= 0 and dp[i - coin] is not None: # ถ้ายังเติมเหรีญได้ 
-                if not dp[i] or len(dp[i - coin]) + 1 < len(dp[i]):
-                    #check if either dp[i] is an empty list (no previous combination for
-                    #  the current amount) or if adding the current coin results in a combination
-                    #  with fewer coins than the existing combination for the current amount
-                    dp[i] = dp[i - coin] + [coin]
+    for coin in coins:
+        for i in range(coin, target + 1): # ปกติจะเริ่มที่ 1 แต่เราเริ่มที่ coin เพื่อoptimize
+                memo[i] = min(memo[i], memo[i - coin] + 1)
+        
+    # Reconstruct the combination of coins.
+    combination = []
+    while target > 0:
+        for coin in coins:
+            if target >= coin and memo[target] == memo[target - coin] + 1:
+                combination.append(coin)
+                target -= coin
+                break
 
-    if not dp[target]:
-        return []  # No combination found for the target amount
-
-    return dp[target]  # Return the combination with the fewest coins
+    return combination
 
 def coin_change_topDown(coins, amount):
     memo = [-1] * (amount + 1)
@@ -47,10 +51,21 @@ def coin_change_topDown(coins, amount):
         return memo[target]
     
     result = min_coins(amount)
-    return result if result is not None else [] 
+    return result if result is not None else []
+ 
+with open("./input.txt", "r") as file:
+    # Read the first line as the target
+    target = int(file.readline().strip())
+    
+    # Read the rest of the lines and split them into a list
+    coins = list(map(int, file.readline().strip().split()))
 
-coins =  [1, 7, 10, 25]
-target = 63
-minCoin = coin_change_topDown(coins, target)
+print(coins)
+print(target)
+time_start = time.perf_counter()
+minCoin = coin_change_bottomUp(coins, target)
+time_end = time.perf_counter()
+print(f"Time elapsed: {time_end - time_start} seconds")
+
 print(minCoin)
 print(len(minCoin))
