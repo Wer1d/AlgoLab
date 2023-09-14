@@ -32,6 +32,9 @@ def min_cost_triangulation(vertices: list) -> float:
         return min_cost
 
     num_vertices = len(vertices)
+    ref_vertex = min(vertices, key=lambda vertex: (vertex[1], vertex[0]))
+    vertices.sort(key=lambda vertex: (polar_angle(ref_vertex, vertex), vertex))
+
     memo = [[0] * num_vertices for _ in range(num_vertices)]
     return dp(0, num_vertices - 1) # start from problem size
 
